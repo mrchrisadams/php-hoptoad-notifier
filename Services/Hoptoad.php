@@ -35,10 +35,16 @@ class Services_Hoptoad
     /**
      * Report E_STRICT
      *
-     * @var bool
+     * @var bool $reportESTRICT
      * @todo Implement set!
      */
     protected static $reportESTRICT = false;
+
+    /**
+     * Timeout for cUrl.
+     * @var int $timeout
+     */
+    protected static $timeout = 2;
 
     /**
      * @var mixed $apiKey
@@ -159,7 +165,7 @@ class Services_Hoptoad
         curl_setopt($curlHandle, CURLOPT_URL, self::$endpoint); // set the url to fetch
         curl_setopt($curlHandle, CURLOPT_POST, 1);	
         curl_setopt($curlHandle, CURLOPT_HEADER, 0);
-        curl_setopt($curlHandle, CURLOPT_TIMEOUT, 10); // time to wait in seconds
+        curl_setopt($curlHandle, CURLOPT_TIMEOUT, self::$timeout);
 	    curl_setopt($curlHandle, CURLOPT_POSTFIELDS,  $yaml);
 	    curl_setopt($curlHandle, CURLOPT_HTTPHEADER, array("Accept: text/xml, application/xml", "Content-type: application/x-yaml"));
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);

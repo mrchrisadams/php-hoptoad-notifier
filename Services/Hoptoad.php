@@ -29,6 +29,7 @@ require_once dirname(__FILE__) . '/../Yaml/Spyc.php';
  * @link     http://github.com/till/php-hoptoad-notifier
  * @todo     This class shouldn't be all static.
  * @todo     Add a unit test, or two.
+ * @todo     Allow injection of Zend_Http_Client or HTTP_Request2
  */
 class Services_Hoptoad
 {

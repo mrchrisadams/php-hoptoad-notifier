@@ -15,7 +15,7 @@
  * Spyc Yaml Parser
  * @ignore
  */
-require_once dirname(__FILE__) . '/Yaml/Spyc.php';
+require_once dirname(__FILE__) . '/../Yaml/Spyc.php';
 
 /**
  * Services_Hoptoad
@@ -45,6 +45,8 @@ class Services_Hoptoad
      * @var int $timeout
      */
     protected static $timeout = 2;
+
+    public static $client = 'curl';
 
     /**
      * @var mixed $apiKey
@@ -144,7 +146,7 @@ class Services_Hoptoad
         if (isset($_ENV)){
             $environment['_ENV'] = $_ENV;
         }
-    
+
         $url  = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; // FIXME for cli
         $body = array(
             'api_key'         => $api_key,
@@ -156,24 +158,33 @@ class Services_Hoptoad
             'environment'     => $environment,
         );
 
-	    $yaml = Spyc::YAMLDump(array("notice" => $body), 4, 60);
+	    $yaml   = Spyc::YAMLDump(array("notice" => $body), 4, 60);
+        $header = array("Accept: text/xml, application/xml", "Content-type: application/x-yaml");
 
-	    $curlHandle = curl_init(); // init curl
+        if (self::$client == 'curl') {
+    	    $curlHandle = curl_init(); // init curl
 
-        // cURL options
-        // FIXME: replace with HTTP_Request2
-        curl_setopt($curlHandle, CURLOPT_URL, self::$endpoint); // set the url to fetch
-        curl_setopt($curlHandle, CURLOPT_POST, 1);	
-        curl_setopt($curlHandle, CURLOPT_HEADER, 0);
-        curl_setopt($curlHandle, CURLOPT_TIMEOUT, self::$timeout);
-	    curl_setopt($curlHandle, CURLOPT_POSTFIELDS,  $yaml);
-	    curl_setopt($curlHandle, CURLOPT_HTTPHEADER, array("Accept: text/xml, application/xml", "Content-type: application/x-yaml"));
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+            // cURL options
+            // FIXME: replace with HTTP_Request2
+            curl_setopt($curlHandle, CURLOPT_URL,            self::$endpoint);
+            curl_setopt($curlHandle, CURLOPT_POST,           1);
+            curl_setopt($curlHandle, CURLOPT_HEADER,         0);
+            curl_setopt($curlHandle, CURLOPT_TIMEOUT,        self::$timeout);
+	        curl_setopt($curlHandle, CURLOPT_POSTFIELDS,     $yaml);
+	        curl_setopt($curlHandle, CURLOPT_HTTPHEADER,     $header);
+            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
 
-        curl_exec($curlHandle);
-        curl_close($curlHandle); 
+            curl_exec($curlHandle);
+            curl_close($curlHandle);
+
+        } elseif (self::$client == 'Zend') {
+            $client = new Zend_Http_Client(self::$endpoint);
+            $client->setHeaders($header);
+            $client->setRawData($yaml, 'application/x-yaml');
+            $client->request('POST');
+        }
     }
-  
+
     /**
      * Build a trace that is formatted in the way Hoptoad expects
      *

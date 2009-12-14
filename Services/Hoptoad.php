@@ -47,7 +47,7 @@ class Services_Hoptoad
      */
     protected static $timeout = 2;
 
-    public static $client = 'curl';
+    public static $client = 'curl'; // PEAR, Zend
 
     /**
      * @var mixed $apiKey
@@ -130,6 +130,7 @@ class Services_Hoptoad
      * @param mixed  $error_class
      *
      * @author Rich Cavanaugh
+     * @todo   Handle response (e.g. errors)
      */
     public static function notify($api_key, $message, $file, $line, $trace, $error_class = null)
     {
@@ -193,6 +194,21 @@ class Services_Hoptoad
             } catch (Zend_Exception $e) {
                 // disregard for now
             }
+
+        } elseif (self::$client == 'PEAR') {
+
+            try {
+
+                $client   = new HTTP_Request2(self::$endpoint);
+                $response = $client->setMethod(HTTP_Request2::METHOD_POST)
+                    ->setHeader($header)
+                    ->setBody($yaml)
+                    ->send();
+
+
+            } catch (HTTP_Request2_Exception $e) {
+                // disregard
+            }
         }
     }
 
@@ -206,23 +222,23 @@ class Services_Hoptoad
      */
     public static function tracer($trace = NULL)
     {
-        $lines = array(); 
+        $lines = array();
 
         $trace = $trace ? $trace : debug_backtrace();
-    
+
         $indent = '';
         $func   = '';
-    
+
         foreach ($trace as $val) {
             if (isset($val['class']) && $val['class'] == 'Services_Hoptoad') {
                 continue;
             }
-      
+
             $file        = isset($val['file']) ? $val['file'] : 'Unknown file';
             $line_number = isset($val['line']) ? $val['line'] : '';
             $func        = isset($val['function']) ? $val['function'] : '';
             $class       = isset($val['class']) ? $val['class'] : '';
-      
+
             $line = $file;
 
             if ($line_number) {

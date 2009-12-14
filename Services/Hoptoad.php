@@ -93,11 +93,11 @@ class Services_Hoptoad
 	    $trace = self::tracer();
         self::notify(self::$apiKey, $message, $file, $line, $trace, null);
     }
-  
+
     /**
      * Handle a raised exception
      *
-     * @param Exception $exception 
+     * @param Exception $exception
      *
      * @return void
      * @author Rich Cavanaugh
@@ -117,7 +117,7 @@ class Services_Hoptoad
             null
         );
     }
-  
+
     /**
      * Pass the error and environment data on to Hoptoad
      *
@@ -149,7 +149,7 @@ class Services_Hoptoad
 
         $url  = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; // FIXME for cli
         $body = array(
-            'api_key'         => $api_key,
+            'api_key'         => self::$apiKey,
             'error_class'     => $error_class,
             'error_message'   => $message,
             'backtrace'       => $trace,
@@ -178,17 +178,27 @@ class Services_Hoptoad
             curl_close($curlHandle);
 
         } elseif (self::$client == 'Zend') {
-            $client = new Zend_Http_Client(self::$endpoint);
-            $client->setHeaders($header);
-            $client->setRawData($yaml, 'application/x-yaml');
-            $client->request('POST');
+
+            try {
+                $client = new Zend_Http_Client(self::$endpoint);
+                $client->setHeaders($header);
+                $client->setRawData($yaml, 'application/x-yaml');
+
+                $response = $client->request('POST');
+
+                //var_dump($response->getBody(), $response->getStatus()); exit;
+
+
+            } catch (Zend_Exception $e) {
+                // disregard for now
+            }
         }
     }
 
     /**
      * Build a trace that is formatted in the way Hoptoad expects
      *
-     * @param string $trace 
+     * @param mixed $trace
      * @return array
      *
      * @author Rich Cavanaugh

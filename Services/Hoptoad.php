@@ -6,12 +6,28 @@ require_once dirname(__FILE__) . '/spyc.php';
  * @package  Services_Hoptoad
  * @author   Rich Cavanaugh
  * @license  
+ * @todo     This class shouldn't be all static.
+ * @todo     Add a unit test, or two.
  */
 class Services_Hoptoad
 {
+    /**
+     * Report E_STRICT
+     *
+     * @var bool
+     * @todo Implement set!
+     */
     protected static $reportESTRICT = false;
 
-    public static $apiKey;
+    /**
+     * @var mixed $apiKey
+     */
+    public static $apiKey = null;
+
+    /**
+     * @var string $endpoint
+     */
+    public static $endpoint = 'http://hoptoadapp.com/notices/';
 
     /**
      * Install the error and exception handlers that connect to Hoptoad
@@ -25,8 +41,8 @@ class Services_Hoptoad
             self::$apiKey = $api_key;
         }
     
-        set_error_handler(array("Hoptoad", "errorHandler"));
-        set_exception_handler(array("Hoptoad", "exceptionHandler"));
+        set_error_handler(array("Services_Hoptoad", "errorHandler"));
+        set_exception_handler(array("Services_Hoptoad", "exceptionHandler"));
     }
   
     /**
@@ -45,8 +61,8 @@ class Services_Hoptoad
             return;
         }
 
-	    $trace = Hoptoad::tracer();
-        Hoptoad::notifyHoptoad(HOPTOAD_API_KEY, $message, $file, $line, $trace, null);
+	    $trace = self::tracer();
+        self::notify(self::$apiKey, $message, $file, $line, $trace, null);
     }
   
     /**
@@ -57,13 +73,13 @@ class Services_Hoptoad
      * @return void
      * @author Rich Cavanaugh
      * @uses   self::tracer()
-     * @uses   self::notifyHoptoad()
+     * @uses   self::notify()
      */
     public static function exceptionHandler(Exception $exception)
     {
         $trace = self::tracer($exception->getTrace());
 
-        self::notifyHoptoad(
+        self::notify(
             self::$apiKey,
             $exception->getMessage(),
             $exception->getFile(),
@@ -85,7 +101,7 @@ class Services_Hoptoad
      *
      * @author Rich Cavanaugh
      */
-    public static function notifyHoptoad($api_key, $message, $file, $line, $trace, $error_class = null)
+    public static function notify($api_key, $message, $file, $line, $trace, $error_class = null)
     {
         array_unshift($trace, "$file:$line");
 
@@ -118,7 +134,8 @@ class Services_Hoptoad
 	    $curlHandle = curl_init(); // init curl
 
         // cURL options
-        curl_setopt($curlHandle, CURLOPT_URL, 'http://hoptoadapp.com/notices/'); // set the url to fetch
+        // FIXME: replace with HTTP_Request2
+        curl_setopt($curlHandle, CURLOPT_URL, self::$endpoint); // set the url to fetch
         curl_setopt($curlHandle, CURLOPT_POST, 1);	
         curl_setopt($curlHandle, CURLOPT_HEADER, 0);
         curl_setopt($curlHandle, CURLOPT_TIMEOUT, 10); // time to wait in seconds
@@ -148,7 +165,7 @@ class Services_Hoptoad
         $func   = '';
     
         foreach ($trace as $val) {
-            if (isset($val['class']) && $val['class'] == 'Hoptoad') {
+            if (isset($val['class']) && $val['class'] == 'Services_Hoptoad') {
                 continue;
             }
       
@@ -170,7 +187,6 @@ class Services_Hoptoad
             }
             $lines[] = $line;
         }
-    
         return $lines;
     }
 }

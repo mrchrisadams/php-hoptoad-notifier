@@ -1,11 +1,32 @@
 <?php
-require_once dirname(__FILE__) . '/spyc.php';
-
 /**
+ * Services_Hoptoad
+ *
  * @category error
  * @package  Services_Hoptoad
- * @author   Rich Cavanaugh
+ * @author   Rich Cavanaugh <no@email>
+ * @author   Till Klampaeckel <till@php.net>
  * @license  
+ * @version  GIT: $Id$
+ * @link     http://github.com/till/php-hoptoad-notifier
+ */
+
+/**
+ * Spyc Yaml Parser
+ * @ignore
+ */
+require_once dirname(__FILE__) . '/Yaml/Spyc.php';
+
+/**
+ * Services_Hoptoad
+ *
+ * @category error
+ * @package  Services_Hoptoad
+ * @author   Rich Cavanaugh <no@email>
+ * @author   Till Klampaeckel <till@php.net>
+ * @license  
+ * @version  Release: @package_version@
+ * @link     http://github.com/till/php-hoptoad-notifier
  * @todo     This class shouldn't be all static.
  * @todo     Add a unit test, or two.
  */

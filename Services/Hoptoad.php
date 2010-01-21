@@ -160,8 +160,8 @@ class Services_Hoptoad
             'environment'     => $environment,
         );
 
-	    $yaml   = Spyc::YAMLDump(array("notice" => $body), 4, 60);
-        $header = array("Accept: text/xml, application/xml", "Content-type: application/x-yaml");
+	    //$yaml   = Spyc::YAMLDump(array("notice" => $body), 4, 60);
+        $header = array("Accept: text/xml, application/xml", "Content-type: text/xml");
 
         if (self::$client == 'curl') {
     	    $curlHandle = curl_init(); // init curl
@@ -179,23 +179,33 @@ class Services_Hoptoad
             curl_exec($curlHandle);
             curl_close($curlHandle);
 
-        } elseif (self::$client == 'Zend') {
+            return;
+
+        }
+
+        if (self::$client == 'Zend') {
 
             try {
                 $client = new Zend_Http_Client(self::$endpoint);
                 $client->setHeaders($header);
-                $client->setRawData($yaml, 'application/x-yaml');
+                $client->setRawData($xml, 'text/xml');
 
                 $response = $client->request('POST');
 
                 //var_dump($response->getBody(), $response->getStatus()); exit;
 
+                if ($response->getStatus() == 200) {
+                    return true;
+                }
+                self::handleErrorResponse($response->getStatus());
 
             } catch (Zend_Exception $e) {
                 // disregard for now
             }
 
-        } elseif (self::$client == 'PEAR') {
+        }
+
+        if (self::$client == 'PEAR') {
 
             try {
 
@@ -205,11 +215,14 @@ class Services_Hoptoad
                     ->setBody($yaml)
                     ->send();
 
+                return;
+
 
             } catch (HTTP_Request2_Exception $e) {
                 // disregard
             }
         }
+        throw new LogicException("Unknown client: " . self::$client);
     }
 
     /**
@@ -253,5 +266,31 @@ class Services_Hoptoad
             $lines[] = $line;
         }
         return $lines;
+    }
+
+    /**
+     * @param mixed $code The HTTP status code from Hoptoad.
+     *
+     * @return void
+     * @throws RuntimeException Error message from hoptoad, translated to a RuntimeException.
+     */
+    protected static function handleErrorResponse($code)
+    {
+        switch ($code) {
+        case '403':
+            $msg .= 'The requested project does not support SSL - resubmit in an http request.';
+            break;
+        case '422':
+            $msg .= 'The submitted notice was invalid - check the notice xml against the schema.';
+            break;
+        case '500':
+            $msg .= 'Unexpected errors - submit a bug report at http://help.hoptoadapp.com.';
+            break;
+        default:
+            $msg .= 'Unknown error code from Hoptoad's API: ' . $code;
+            break;
+        }
+
+        throw new RuntimeException($msg, $code);
     }
 }

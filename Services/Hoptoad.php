@@ -15,7 +15,7 @@
  * Spyc Yaml Parser
  * @ignore
  */
-require_once dirname(__FILE__) . '/Yaml/Spyc.php';
+require_once dirname(dirname(__FILE__)) . '/Yaml/Spyc.php';
 
 /**
  * Services_Hoptoad

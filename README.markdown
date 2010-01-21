@@ -14,7 +14,10 @@ The notifier uses the php's curl librarys. To install on Ubuntu if you are using
 	sudo apt-get install php5-curl
 	sudo /etc/init.d/apache2 reload
 
-    
+*If you cannot install cURL, you may use [HTTP_Request2](http://pear.php.net/package/HTTP_Request2) or [Zend_Http_Client](http://framework.zend.com) instead.*
+    Services_Hoptoad::$client = 'PEAR';
+    Services_Hoptoad::$client = 'Zend';
+
 # License
 
 Copyright (c) 2009, Rich Cavanaugh

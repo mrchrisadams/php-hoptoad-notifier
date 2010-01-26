@@ -49,7 +49,10 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $_SERVER['argv']   = array();
         $_SERVER['argv'][] = '/root/exploit';
         $_SERVER['argv'][] = '-success';
-        
+
+        // for a clean unit test
+        unset($_REQUEST);
+        unset($_SESSION);        
 
         $request = new Services_Hoptoad_Request;
         $request->setException(new LogicException("Your mom."));

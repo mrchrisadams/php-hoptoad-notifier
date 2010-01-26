@@ -18,6 +18,31 @@ require_once 'PHPUnit/Framework/TestCase.php';
 class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * Validate the request generated.
+     *
+     * @return void
+     */
+    public function testIfTheRequestIsValid()
+    {
+        $schema = dirname(dirname(dirname(__FILE__))) . '/hoptoad_2_0.xsd';
+
+        $request = new Services_Hoptoad_Request('1234');
+        $request->setException(new LogicException("Your mom."));
+        $request->setEnvironment('testing');
+
+        $xmhell = (string) $request;
+
+        $dom = new DOMDocument();
+        $dom->loadXml($xmhell);
+
+        // Validate temporary DOMDocument.
+        if (!$dom->schemaValidate($schema)) {
+            $this->fail('Data is invalid.');
+        }
+
+    }
+
+    /**
      * Test XML creation.
      *
      * @return void
@@ -64,7 +89,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
 
         // for a clean unit test
         unset($_REQUEST);
-        unset($_SESSION);        
+        unset($_SESSION);
 
         $request = new Services_Hoptoad_Request('1234');
         $request->setException(new LogicException("Your mom."));

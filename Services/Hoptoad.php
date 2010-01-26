@@ -6,7 +6,7 @@
  * @package  Services_Hoptoad
  * @author   Rich Cavanaugh <no@email>
  * @author   Till Klampaeckel <till@php.net>
- * @license  
+ * @license  http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version  GIT: $Id$
  * @link     http://github.com/till/php-hoptoad-notifier
  */
@@ -28,7 +28,7 @@ include_once dirname(__FILE__) . '/Hoptoad/Exception.php';
  * @package  Services_Hoptoad
  * @author   Rich Cavanaugh <no@email>
  * @author   Till Klampaeckel <till@php.net>
- * @license  
+ * @license  http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version  Release: @package_version@
  * @link     http://github.com/till/php-hoptoad-notifier
  * @todo     This class shouldn't be all static.

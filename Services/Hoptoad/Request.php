@@ -5,7 +5,7 @@
  * @category error
  * @package  Services_Hoptoad
  * @author   Till Klampaeckel <till@php.net>
- * @license  
+ * @license  http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version  GIT: $Id$
  * @link     http://github.com/till/php-hoptoad-notifier
  */
@@ -16,7 +16,7 @@
  * @category error
  * @package  Services_Hoptoad
  * @author   Till Klampaeckel <till@php.net>
- * @license  
+ * @license  http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version  Release: @package_version@
  * @link     http://github.com/till/php-hoptoad-notifier
  */

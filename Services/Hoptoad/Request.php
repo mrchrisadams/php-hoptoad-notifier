@@ -250,9 +250,15 @@ class Services_Hoptoad_Request
         }
 
         foreach ($trace as $step) {
+
+            $method = $step['function'];
+            if (isset($step['class'])) {
+                $method = $step['class'] . '::' . $method;
+            }
+
             $line = $backtrace->addChild('line');
-            $line->addAttribute('method', $step['function']);
-            $line->addAttribute('file', $step['file']);
+            $line->addAttribute('method', $method);
+            $line->addAttribute('file',   $step['file']);
             $line->addAttribute('number', $step['line']);
         }
     }

@@ -95,7 +95,9 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $request->setException(new LogicException("Your mom."));
         $request->setEnvironment('testing');
 
-        $this->assertEquals($assert, $request->getRequestData());
-        $this->assertEquals($assert, (string) $request);
+        $actual = $request->getRequestData();
+
+        $this->assertEquals($assert, $actual);
+        $this->assertEquals($actual, (string) $request);
     }
 }

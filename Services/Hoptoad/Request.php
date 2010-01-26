@@ -166,6 +166,35 @@ class Services_Hoptoad_Request
     }
 
     /**
+     * Rebuild arrays in case they are nested.
+     *
+     * @param array $array Such as $_SESSION, $_POST, ...
+     *
+     * @return mixed
+     */
+    protected function cleanArray(array $array = null)
+    {
+        $keep = array();
+        if (($array === null) || (count($array) == 0)) {
+            return $keep;
+        }
+        foreach ($array as $key => $value) {
+
+            if (!is_array($value)) {
+                $keep[$key] = $value;
+                continue;
+            }
+
+            foreach ($value as $subKey => $subValue) {
+                $keep["{$key}_{$subKey}"] = $subValue;
+            }
+
+        }
+
+        return $keep;
+    }
+
+    /**
      * Create the <notice /> element. This wraps around everything.
      */
     protected function setupNotice()
@@ -261,12 +290,14 @@ class Services_Hoptoad_Request
         $request->addChild('action');
 
         // optional
+        $_REQUEST = $this->cleanArray($_REQUEST);
         if (isset($_REQUEST) && count($_REQUEST) > 0) {
             $params = $request->addChild('params');
             $this->arrayToXml($_REQUEST, $params);
         }
 
         // optional
+        $_SESSION = $this->cleanArray($_SESSION);
         if (isset($_SESSION) && count($_SESSION) > 0) {
             $session = $request->addChild('session');
             $this->arrayToXml($_SESSION, $session);

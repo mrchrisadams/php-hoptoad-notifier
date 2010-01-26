@@ -25,9 +25,14 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $assert .= '<name>Services_Hoptoad</name>';
         $assert .= '<url>http://github.com/till/php-hoptoad-notifier</url>';
         $assert .= '<version>@package_version@</version></notifier>';
-        $assert .= '</notice>' . "\n";
+        $assert .= '<error><class>LogicException</class><message>Your mom.</message><backtrace/></error>';
+        $assert .= '</notice>';
+        $assert .= "\n";
 
         $request = new Services_Hoptoad_Request;
-        $this->assertEquals($request->getRequestData(), $assert);
+        $request->setException(new LogicException("Your mom."));
+
+
+        $this->assertEquals($assert, $request->getRequestData());
     }
 }

@@ -33,8 +33,13 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $assert .= '<cgi-data>';
         $assert .= '<var key="foo">bar</var>';
         $assert .= '<var key="ruby">is annoying</var>';
+        $assert .= '<var key="HOME">/home/till</var>';
         $assert .= '</cgi-data>';
         $assert .= '</request>';
+        $assert .= '<server-environment>';
+        $assert .= '<project-root>/home/till</project-root>';
+        $assert .= '<environment-name>testing</environment-name>';
+        $assert .= '</server-environment>';
         $assert .= '</notice>';
         $assert .= "\n";
 
@@ -43,6 +48,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $_ENV         = array();
         $_ENV['foo']  = 'bar';
         $_ENV['ruby'] = 'is annoying';
+        $_ENV['HOME'] = '/home/till';
 
         unset($_SERVER['argv']);
 
@@ -56,7 +62,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
 
         $request = new Services_Hoptoad_Request;
         $request->setException(new LogicException("Your mom."));
-
+        $request->setEnvironment('testing');
 
         $this->assertEquals($assert, $request->getRequestData());
     }

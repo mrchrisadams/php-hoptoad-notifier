@@ -17,6 +17,11 @@
 include_once dirname(__FILE__) . '/Hoptoad/Request.php';
 
 /**
+ * Services_Hoptoad_Exception
+ */
+include_once dirname(__FILE__) . '/Hoptoad/Exception.php';
+
+/**
  * Services_Hoptoad
  *
  * @category error
@@ -209,7 +214,7 @@ class Services_Hoptoad
                 if ($response->getStatus() == 200) {
                     return true;
                 }
-                self::handleErrorResponse($response->getStatus());
+                self::handleErrorResponse($response->getStatus(), $data);
 
             } catch (Zend_Exception $e) {
                 // disregard for now
@@ -237,8 +242,6 @@ class Services_Hoptoad
 
         throw new LogicException("Unknown client: " . self::$client);
     }
-
-    
 
     /**
      * Build a trace that is formatted in the way Hoptoad expects
@@ -284,12 +287,12 @@ class Services_Hoptoad
     }
 
     /**
-     * @param mixed $code The HTTP status code from Hoptoad.
-     *
+     * @param mixed  $code        The HTTP status code from Hoptoad.
+     * @param string $requestData The XML sent to Hoptoad.
      * @return void
-     * @throws RuntimeException Error message from hoptoad, translated to a RuntimeException.
+     * @throws Services_Hoptoad_Exception Error message from hoptoad, translated to a RuntimeException.
      */
-    protected static function handleErrorResponse($code)
+    protected static function handleErrorResponse($code, $requestData)
     {
         switch ($code) {
 
@@ -307,6 +310,8 @@ class Services_Hoptoad
             break;
         }
 
-        throw new RuntimeException($msg, $code);
+        $e = new Services_Hoptoad_Exception($msg, $code);
+        $e->setRequestData($requestData);
+        throw $e;
     }
 }

@@ -26,8 +26,30 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $assert .= '<url>http://github.com/till/php-hoptoad-notifier</url>';
         $assert .= '<version>@package_version@</version></notifier>';
         $assert .= '<error><class>LogicException</class><message>Your mom.</message><backtrace/></error>';
+        $assert .= '<request>';
+        $assert .= '<url>/root/exploit -success</url>';
+        $assert .= '<component/>';
+        $assert .= '<action/>';
+        $assert .= '<cgi-data>';
+        $assert .= '<var key="foo">bar</var>';
+        $assert .= '<var key="ruby">is annoying</var>';
+        $assert .= '</cgi-data>';
+        $assert .= '</request>';
         $assert .= '</notice>';
         $assert .= "\n";
+
+        unset($_ENV);
+
+        $_ENV         = array();
+        $_ENV['foo']  = 'bar';
+        $_ENV['ruby'] = 'is annoying';
+
+        unset($_SERVER['argv']);
+
+        $_SERVER['argv']   = array();
+        $_SERVER['argv'][] = '/root/exploit';
+        $_SERVER['argv'][] = '-success';
+        
 
         $request = new Services_Hoptoad_Request;
         $request->setException(new LogicException("Your mom."));

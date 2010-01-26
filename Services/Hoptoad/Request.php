@@ -212,12 +212,16 @@ class Services_Hoptoad_Request
         $backtrace = $error->addChild('backtrace');
 
         $trace = $this->exception->getTrace();
-        if (count($trace)) {
-            return;
+        if (count($trace) == 0) {
+            $trace[] = array(
+                'method' => 'unknown',
+                'file'   => 'unknown',
+                'line'   => 0,
+            );
         }
 
         foreach ($trace as $step) {
-            $line = $trace->addChild('line');
+            $line = $backtrace->addChild('line');
             $line->addAttribute('method', $step['function']);
             $line->addAttribute('file', $step['file']);
             $line->addAttribute('number', $step['line']);

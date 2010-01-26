@@ -20,7 +20,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
     /**
      * Test XML creation.
      *
-     * @return true
+     * @return void
      */
     public function testXmlHell()
     {

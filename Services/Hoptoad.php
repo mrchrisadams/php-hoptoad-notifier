@@ -55,6 +55,11 @@ class Services_Hoptoad
     public static $apiKey = null;
 
     /**
+     * @var string $environment
+     */
+    public static $environment = 'production';
+
+    /**
      * @var string $endpoint
      */
     public static $endpoint = 'http://hoptoadapp.com/notices/';
@@ -120,6 +125,28 @@ class Services_Hoptoad
     }
 
     /**
+     * Notify for the 2.0 API. This is a test and will eventually replace 
+     * {@link self::notify()}.
+     *
+     * @param Exception $e
+     *
+     * @return void
+     * @uses   Services_Hoptoad_Request
+     */
+    public static function notifyV2(Exception $e)
+    {
+        $data = new Services_Hoptoad_Request(self::$apiKey);
+        $data->setException($e);
+        $data->setEnvironment(self::$environment);
+
+        $endpoint = 'http://hoptoadapp.com/notifier_api/v2/notices';
+        $xml      = (string) $data;
+        $header   = array("Accept: text/xml, application/xml", "Content-type: text/xml");
+
+        self::makeRequest($header, $xml, $endpoint);        
+    }
+
+    /**
      * Pass the error and environment data on to Hoptoad
      *
      * @param string $api_key
@@ -134,28 +161,7 @@ class Services_Hoptoad
      */
     public static function notify($api_key, $message, $file, $line, $trace, $error_class = null)
     {
-        array_unshift($trace, "$file:$line");
-
-        $session = array();
-        if (isset($_SESSION)) {
-            $session = array('key' => session_id(), 'data' => $_SESSION);
-        }
-
-        $environment = array();
-        if (isset($_SERVER)) {
-            $environment['_SERVER'] = $_SERVER;
-        }
-        if (isset($_ENV)){
-            $environment['_ENV'] = $_ENV;
-        }
-
-        $url  = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; // FIXME for cli
-        $body = array(
-            'api_key'         => self::$apiKey,
-            'error_class'     => $error_class,
-            'error_message'   => $message,
-            'backtrace'       => $trace,
-            'request'         => array("params" => $_REQUEST, "url" => $url),
+        throw new RuntimeException("Unsupport Api.");
             'session'         => $session,
             'environment'     => $environment,
         );
@@ -163,7 +169,21 @@ class Services_Hoptoad
 	    //$yaml   = Spyc::YAMLDump(array("notice" => $body), 4, 60);
         $header = array("Accept: text/xml, application/xml", "Content-type: text/xml");
 
+    }
+
+    /**
+     * @param array  $header
+     * @param string $data
+     * @param mixed  $endpoint
+     */
+    protected static function makeRequest(array $header, $data, $endpoint = null)
+    {
+        if ($endpoint === null) {
+            $endpoint = self::$endpoint;
+        }
+
         if (self::$client == 'curl') {
+
     	    $curlHandle = curl_init(); // init curl
 
             // cURL options
@@ -172,7 +192,7 @@ class Services_Hoptoad
             curl_setopt($curlHandle, CURLOPT_POST,           1);
             curl_setopt($curlHandle, CURLOPT_HEADER,         0);
             curl_setopt($curlHandle, CURLOPT_TIMEOUT,        self::$timeout);
-	        curl_setopt($curlHandle, CURLOPT_POSTFIELDS,     $yaml);
+	        curl_setopt($curlHandle, CURLOPT_POSTFIELDS,     $data);
 	        curl_setopt($curlHandle, CURLOPT_HTTPHEADER,     $header);
             curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
 
@@ -186,9 +206,9 @@ class Services_Hoptoad
         if (self::$client == 'Zend') {
 
             try {
-                $client = new Zend_Http_Client(self::$endpoint);
+                $client = new Zend_Http_Client($endpoint);
                 $client->setHeaders($header);
-                $client->setRawData($xml, 'text/xml');
+                $client->setRawData($data, 'text/xml');
 
                 $response = $client->request('POST');
 
@@ -209,10 +229,10 @@ class Services_Hoptoad
 
             try {
 
-                $client   = new HTTP_Request2(self::$endpoint);
+                $client   = new HTTP_Request2($endpoint);
                 $response = $client->setMethod(HTTP_Request2::METHOD_POST)
                     ->setHeader($header)
-                    ->setBody($yaml)
+                    ->setBody($data)
                     ->send();
 
                 return;
@@ -222,8 +242,11 @@ class Services_Hoptoad
                 // disregard
             }
         }
+
         throw new LogicException("Unknown client: " . self::$client);
     }
+
+    
 
     /**
      * Build a trace that is formatted in the way Hoptoad expects

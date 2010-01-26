@@ -26,6 +26,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
     {
         $assert  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $assert .= '<notice version="2.0">';
+        $assert .= '<api-key>1234</api-key>';
         $assert .= '<notifier>';
         $assert .= '<name>Services_Hoptoad</name>';
         $assert .= '<url>http://github.com/till/php-hoptoad-notifier</url>';
@@ -65,7 +66,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         unset($_REQUEST);
         unset($_SESSION);        
 
-        $request = new Services_Hoptoad_Request;
+        $request = new Services_Hoptoad_Request('1234');
         $request->setException(new LogicException("Your mom."));
         $request->setEnvironment('testing');
 

@@ -12,10 +12,9 @@
  */
 
 /**
- * Spyc Yaml Parser
- * @ignore
+ * Services_Hoptoad_Request
  */
-require_once dirname(__FILE__) . '/../Yaml/Spyc.php';
+include_once dirname(__FILE__) . '/Hoptoad/Request.php';
 
 /**
  * Services_Hoptoad
@@ -125,10 +124,10 @@ class Services_Hoptoad
     }
 
     /**
-     * Notify for the 2.0 API. This is a test and will eventually replace 
+     * Notify for the 2.0 API. This is a test and will eventually replace
      * {@link self::notify()}.
      *
-     * @param Exception $e
+     * @param Exception $e The exception to report.
      *
      * @return void
      * @uses   Services_Hoptoad_Request
@@ -143,7 +142,7 @@ class Services_Hoptoad
         $xml      = (string) $data;
         $header   = array("Accept: text/xml, application/xml", "Content-type: text/xml");
 
-        self::makeRequest($header, $xml, $endpoint);        
+        self::makeRequest($header, $xml, $endpoint);
     }
 
     /**
@@ -162,13 +161,6 @@ class Services_Hoptoad
     public static function notify($api_key, $message, $file, $line, $trace, $error_class = null)
     {
         throw new RuntimeException("Unsupport Api.");
-            'session'         => $session,
-            'environment'     => $environment,
-        );
-
-	    //$yaml   = Spyc::YAMLDump(array("notice" => $body), 4, 60);
-        $header = array("Accept: text/xml, application/xml", "Content-type: text/xml");
-
     }
 
     /**
@@ -300,6 +292,7 @@ class Services_Hoptoad
     protected static function handleErrorResponse($code)
     {
         switch ($code) {
+
         case '403':
             $msg .= 'The requested project does not support SSL - resubmit in an http request.';
             break;
@@ -310,7 +303,7 @@ class Services_Hoptoad
             $msg .= 'Unexpected errors - submit a bug report at http://help.hoptoadapp.com.';
             break;
         default:
-            $msg .= 'Unknown error code from Hoptoad's API: ' . $code;
+            $msg .= 'Unknown error code from Hoptoad\'s API: ' . $code;
             break;
         }
 

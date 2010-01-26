@@ -157,6 +157,9 @@ class Services_Hoptoad_Request
     protected function arrayToXml(array $array, SimpleXMLElement $element)
     {
         foreach ($array as $key => $value) {
+            if (is_array($value)) { // this is not supported by the API
+                continue;
+            }
             $var = $element->addChild('var', $value);
             $var->addAttribute('key', $key);
         }

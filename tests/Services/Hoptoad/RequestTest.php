@@ -17,6 +17,11 @@ require_once 'PHPUnit/Framework/TestCase.php';
 
 class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * Test XML creation.
+     *
+     * @return true
+     */
     public function testXmlHell()
     {
         $assert  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -65,5 +70,6 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $request->setEnvironment('testing');
 
         $this->assertEquals($assert, $request->getRequestData());
+        $this->assertEquals($assert, (string) $request);
     }
 }

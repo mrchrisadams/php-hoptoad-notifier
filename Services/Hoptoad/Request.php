@@ -23,6 +23,12 @@
 class Services_Hoptoad_Request
 {
     /**
+     * @var string
+     * @see self::__construct()
+     */
+    protected $apiKey = '';
+
+    /**
      * @var string $apiVersion Hoptoad's API version.
      */
     protected $apiVersion = '2.0';
@@ -59,28 +65,42 @@ class Services_Hoptoad_Request
     /**
      * Start a new request object!
      *
+     * @param string $apiKey        The API-Key to connect to Hoptoad with.
      * @param string $clientName    The name of the client - Services_Hoptoad most likely.
      * @param string $clientVersion The version of this class.
      *
      * @return $this
-     *
-     * @uses self::createNotice()
      */
-    public function __construct($clientName = 'Services_Hoptoad', $clientVersion = '@package_version@')
+    public function __construct($apiKey, $clientName = 'Services_Hoptoad', $clientVersion = '@package_version@')
     {
+        $this->apiKey = $apiKey;
+
         $this->clientName    = $clientName;
         $this->clientVersion = $clientVersion;
+    }
 
-        $this->setupNotice();
+    /**
+     * Magic method - just a wrapper.
+     *
+     * @return string
+     * @uses   self::getRequestData()
+     */
+    public function __toString()
+    {
+        return $this->getRequestData();
     }
 
     /**
      * Get the XML in a string.
      *
      * @return string
+     * @uses self::createNotice()
      */
     public function getRequestData()
     {
+        // start from scratch
+        $this->setupNotice();
+        
         /**
          * 1) Notifier
          * 2) Error
@@ -149,6 +169,7 @@ class Services_Hoptoad_Request
     {
         $this->notice = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<notice />');
         $this->notice->addAttribute('version', $this->apiVersion);
+        $this->notice->addChild('api-key', $this->apiKey);
     }
 
     /**

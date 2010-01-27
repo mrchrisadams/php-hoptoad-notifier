@@ -241,11 +241,16 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
     protected function findPath($path_to_translate)
     {
         $IncludePath = explode(PATH_SEPARATOR, get_include_path()); 
-        foreach($IncludePath as $prefix){ 
-            if(substr($prefix,-1) == DIRECTORY_SEPARATOR) {
-                $prefix=substr($prefix,0,-1); 
+        foreach ($IncludePath as $prefix) {
+            if (substr($prefix,-1) == DIRECTORY_SEPARATOR) {
+                $prefix = substr($prefix,0,-1); 
             }
-            $try_path=sprintf("%s%s%s", $prefix, DIRECTORY_SEPARATOR, $path_to_translate); 
+            $try_path = sprintf(
+                "%s%s%s",
+                $prefix,
+                DIRECTORY_SEPARATOR,
+                $path_to_translate
+            );
             if (file_exists($try_path)) {
                 return($try_path); 
             }

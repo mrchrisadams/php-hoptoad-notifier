@@ -163,7 +163,7 @@ class Services_Hoptoad
      *
      * @param Exception $e The exception to report.
      *
-     * @return void
+     * @return boolean
      * @uses   Services_Hoptoad_Request
      */
     public static function notifyV2(Exception $e)
@@ -176,7 +176,7 @@ class Services_Hoptoad
         $xml      = (string) $data;
         $header   = array("Accept: text/xml, application/xml", "Content-type: text/xml");
 
-        self::makeRequest($header, $xml, $endpoint);
+        return self::makeRequest($header, $xml, $endpoint);
     }
 
     /**

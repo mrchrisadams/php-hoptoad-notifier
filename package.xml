@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0         http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd" version="2.0">
+  <name>Services_Hoptoad</name>
+  <channel>pearfarm.pearfarm.org</channel>
+  <summary>A service wrapper to hoptoadapp.com.</summary>
+  <description>hoptoadapp.com is a service to collect all kinds of &amp;quot;errors&amp;quot; from your applications.
+
+Services_Hoptoad is a wrapper around hoptoadapp.com's API (Version 2). Currently this service wrapper supports web and also cli apps.
+
+To communicate with hoptoadapp.com's API, we require either cURL, HTTP_Request2 or Zend_Http_Client.
+</description>
+  <lead>
+    <name>Till Klampaeckel</name>
+    <user>till</user>
+    <email>till@php.net</email>
+    <active>yes</active>
+  </lead>
+  <date>2010-01-27</date>
+  <time>16:21:02</time>
+  <version>
+    <release>0.0.1</release>
+    <api>0.0.1</api>
+  </version>
+  <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+  </stability>
+  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+  <notes>Initial release.</notes>
+  <contents>
+    <dir name="/">
+      <file name="README.markdown" role="doc" md5sum="9eda89d8aba0e323adbb64b17bb899b2"/>
+      <dir name="Services">
+        <file name="Hoptoad.php" role="php" md5sum="97f7997240cd0a0a64f3441b7bebe25d"/>
+        <dir name="Hoptoad">
+          <file name="Exception.php" role="php" md5sum="f6e6aaeec1df42c1de5718a080160dd4"/>
+          <file name="Request.php" role="php" md5sum="51842840c8e691113d123fc376f8ed98"/>
+        </dir>
+      </dir>
+      <dir name="docs">
+        <file name="example.php" role="doc" md5sum="b25b0e118d19f05dcdd1345688934544"/>
+      </dir>
+      <dir name="tests">
+        <dir name="Services">
+          <dir name="Hoptoad">
+            <file name="RequestTest.php" role="test" md5sum="c1c8ffa9ac41960153d0be4fba6e5a0d"/>
+          </dir>
+          <file name="HoptoadTest.php" role="test" md5sum="3e347834b67a0ed52c66f81ca63e7521"/>
+        </dir>
+        <file name="hoptoad_2_0.xsd" role="test" md5sum="3f0a419e6ce365cf00e479d995feb34f"/>
+        <file name="test-config.php-dist" role="test" md5sum="b424ac2346b24f851ec827903a03c33f"/>
+        <file name="test.xml" role="test" md5sum="4fb886b1d95caae70d237cb3f7d912fb"/>
+      </dir>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.0.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0</min>
+      </pearinstaller>
+      <extension>
+        <name>simplexml</name>
+      </extension>
+    </required>
+    <optional>
+      <package>
+        <name>HTTP_Request2</name>
+        <channel>pear.php.net</channel>
+      </package>
+      <extension>
+        <name>curl</name>
+      </extension>
+    </optional>
+  </dependencies>
+  <phprelease/>
+</package>

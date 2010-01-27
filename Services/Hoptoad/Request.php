@@ -253,13 +253,13 @@ class Services_Hoptoad_Request
 
             $method = $step['function'];
             if (isset($step['class'])) {
-                $method = $step['class'] . '::' . $method;
+                $method = $step['class'] . $step['type'] . $method;
             }
 
             $line = $backtrace->addChild('line');
             $line->addAttribute('method', $method);
-            $line->addAttribute('file',   $step['file']);
-            $line->addAttribute('number', $step['line']);
+            $line->addAttribute('file',   @$step['file']);
+            $line->addAttribute('number', @$step['line']);
         }
     }
 
@@ -296,17 +296,21 @@ class Services_Hoptoad_Request
         $request->addChild('action');
 
         // optional
-        $_REQUEST = $this->cleanArray($_REQUEST);
-        if (isset($_REQUEST) && count($_REQUEST) > 0) {
-            $params = $request->addChild('params');
-            $this->arrayToXml($_REQUEST, $params);
+        if (isset($_REQUEST)) {
+            $_REQUEST = $this->cleanArray($_REQUEST);
+            if (count($_REQUEST) > 0) {
+                $params = $request->addChild('params');
+                $this->arrayToXml($_REQUEST, $params);
+            }
         }
 
         // optional
-        $_SESSION = $this->cleanArray($_SESSION);
-        if (isset($_SESSION) && count($_SESSION) > 0) {
-            $session = $request->addChild('session');
-            $this->arrayToXml($_SESSION, $session);
+        if (isset($_SESSION)) {
+            $_SESSION = $this->cleanArray($_SESSION);
+            if (count($_SESSION) > 0) {
+                $session = $request->addChild('session');
+                $this->arrayToXml($_SESSION, $session);
+            }
         }
 
         // this is optional as well, but we set it up regardless

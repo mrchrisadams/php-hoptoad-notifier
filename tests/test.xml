@@ -1,0 +1,16 @@
+<phpunit backupGlobals="false"
+    backupStaticAttributes="true"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="true"
+    stopOnFailure="false"
+    syntaxCheck="false"
+    testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader">
+    <testsuites>
+        <testsuite name="Services_Hoptoad TestSuite">
+            <directory>Services/</directory>
+         </testsuite>
+    </testsuites>
+</phpunit>

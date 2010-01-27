@@ -1,0 +1,3 @@
+<?php
+// rename this file to test-config.php
+$API_KEY = '';

@@ -236,6 +236,7 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
      *                                  e.g. from include 'Foo/Bar.php';
      *
      * @return mixed
+     * @credit http://docs.php.net/manual/en/function.realpath.php#78224
      */
     protected function findPath($path_to_translate)
     {

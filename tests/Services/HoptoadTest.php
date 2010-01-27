@@ -32,6 +32,10 @@ class Services_HoptoadTest extends PHPUnit_Framework_TestCase
      */
     public function testHoptoad()
     {
-        $this->markIncomplete();
+        $this->markTestIncomplete("Need a test config, etc..");
+
+        $exception = new Exception("This is a test.");
+        Services_Hoptoad::$apiKey = '1234';
+        Services_Hoptoad::notifyV2($exception);
     }
 }

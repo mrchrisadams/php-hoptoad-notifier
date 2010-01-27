@@ -87,10 +87,14 @@ class Services_Hoptoad
     public static function autoload($className)
     {
         static $thisRoot;
-        if ($thisRoot === null) {
-            $thisRoot = dirname(__FILE__);
+
+        if ($thisRoot == null) {
+            $thisRoot = dirname(dirname(__FILE__));
         }
-        return include $thisRoot . '/' . str_replace('_', '/', $className) . '.php';
+
+        $file = str_replace('_', '/', $className) . '.php';
+
+        return include $thisRoot . '/' . $file;
     }
 
     /**

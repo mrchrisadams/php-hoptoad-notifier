@@ -12,16 +12,6 @@
  */
 
 /**
- * Services_Hoptoad_Request
- */
-//include_once dirname(__FILE__) . '/Hoptoad/Request.php';
-
-/**
- * Services_Hoptoad_Exception
- */
-//include_once dirname(__FILE__) . '/Hoptoad/Exception.php';
-
-/**
  * Register autoloader
  */
 spl_autoload_register(array('Services_Hoptoad', 'autoload'));

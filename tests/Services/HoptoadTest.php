@@ -18,6 +18,14 @@ require_once 'PHPUnit/Framework/TestCase.php';
 class Services_HoptoadTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @expectedException RuntimeException
+     */
+    public function testOldApi()
+    {
+        Services_Hoptoad::notify('1234', 'Lorem ipsum', 'foobar.php', 0, array());
+    }
+
+    /**
      * Test everything.
      *
      * @return void

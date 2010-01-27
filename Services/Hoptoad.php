@@ -64,6 +64,20 @@ class Services_Hoptoad
     public static $endpoint = 'http://hoptoadapp.com/notices/';
 
     /**
+     * __construct
+     *
+     * @param mixed $apiKey Optionally!
+     *
+     * @return $this
+     */
+    public function __construct($apiKey = null)
+    {
+        if ($apiKey !== null) {
+            self::$apiKey = $apiKey;
+        }
+    }
+
+    /**
      * Autoloader!
      *
      * @param string $className The class to load.

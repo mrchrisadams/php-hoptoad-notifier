@@ -163,6 +163,9 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $pearPath = $this->findPath('PHPUnit/Framework/TestCase.php');
         $pearPath = dirname(dirname(dirname($pearPath)));
 
+
+        $thisPath = dirname(dirname(dirname(dirname(__FILE__))));
+
         $assert  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $assert .= '<notice version="2.0">';
         $assert .= '<api-key>1234</api-key>';
@@ -177,12 +180,8 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;runTest" file="' . $pearPath . '/PHPUnit/Framework/TestCase.php" number="707"/>';
         $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;runBare" file="' . $pearPath . '/PHPUnit/Framework/TestResult.php" number="687"/>';
         $assert .= '<line method="PHPUnit_Framework_TestResult-&gt;run" file="' . $pearPath . '/PHPUnit/Framework/TestCase.php" number="653"/>';
-        $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;run" file="' . $pearPath . '/PHPUnit/Framework/TestSuite.php" number="756"/>';
-        $assert .= '<line method="PHPUnit_Framework_TestSuite-&gt;runTest" file="' . $pearPath . '/PHPUnit/Framework/TestSuite.php" number="732"/>';
-        $assert .= '<line method="PHPUnit_Framework_TestSuite-&gt;run" file="' . $pearPath . '/PHPUnit/TextUI/TestRunner.php" number="350"/>';
-        $assert .= '<line method="PHPUnit_TextUI_TestRunner-&gt;doRun" file="' . $pearPath . '/PHPUnit/TextUI/Command.php" number="214"/>';
-        $assert .= '<line method="PHPUnit_TextUI_Command-&gt;run" file="' . $pearPath . '/PHPUnit/TextUI/Command.php" number="147"/>';
-        $assert .= '<line method="PHPUnit_TextUI_Command::main" file="/usr/bin/phpunit" number="52"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;run" file="' . $thisPath . '/tests/-" number="19"/>';
+        $assert .= '<line method="__phpunit_run_isolated_test" file="' . $thisPath . '/tests/-" number="231"/>';
         $assert .= '</backtrace>';
         $assert .= '</error>';
         $assert .= '<request>';

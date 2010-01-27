@@ -14,12 +14,17 @@
 /**
  * Services_Hoptoad_Request
  */
-include_once dirname(__FILE__) . '/Hoptoad/Request.php';
+//include_once dirname(__FILE__) . '/Hoptoad/Request.php';
 
 /**
  * Services_Hoptoad_Exception
  */
-include_once dirname(__FILE__) . '/Hoptoad/Exception.php';
+//include_once dirname(__FILE__) . '/Hoptoad/Exception.php';
+
+/**
+ * Register autoloader
+ */
+spl_autoload_register(array('Services_Hoptoad', 'autoload'));
 
 /**
  * Services_Hoptoad
@@ -67,6 +72,22 @@ class Services_Hoptoad
      * @var string $endpoint
      */
     public static $endpoint = 'http://hoptoadapp.com/notices/';
+
+    /**
+     * Autoloader!
+     *
+     * @param string $className The class to load.
+     *
+     * @return bool
+     */
+    public static function autoload($className)
+    {
+        static $thisRoot;
+        if ($thisRoot === null) {
+            $thisRoot = dirname(__FILE__);
+        }
+        return include $thisRoot . '/' . str_replace('_', '/', $className) . '.php';
+    }
 
     /**
      * Install the error and exception handlers that connect to Hoptoad
@@ -193,8 +214,10 @@ class Services_Hoptoad
 	        curl_setopt($curlHandle, CURLOPT_HTTPHEADER,     $header);
             curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
 
-            curl_exec($curlHandle);
+            $response = curl_exec($curlHandle);
             curl_close($curlHandle);
+
+            var_dump($response); // this sucks
 
             return;
 
@@ -232,8 +255,10 @@ class Services_Hoptoad
                     ->setBody($data)
                     ->send();
 
-                return;
-
+                if ($response->getStatus() == 200) {
+                    return true;
+                }
+                self::handleErrorResponse($response->getStatus(), $data);
 
             } catch (HTTP_Request2_Exception $e) {
                 // disregard

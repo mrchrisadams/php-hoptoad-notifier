@@ -223,12 +223,14 @@ class Services_Hoptoad
             curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
 
             $response = curl_exec($curlHandle);
+            $info     = curl_getinfo($curlHandle);
             curl_close($curlHandle);
 
-            var_dump($response); // this sucks
+            if ($info['http_code'] == 200) {
+                return true;
+            }
 
-            return;
-
+            self::handleErrorResponse($info['http_code'], $data);
         }
 
         if (self::$client == 'Zend') {
@@ -327,8 +329,10 @@ class Services_Hoptoad
      */
     protected static function handleErrorResponse($code, $requestData)
     {
-        switch ($code) {
+        $msg = '';
 
+        switch ($code) {
+        default:
         case '403':
             $msg .= 'The requested project does not support SSL - resubmit in an http request.';
             break;

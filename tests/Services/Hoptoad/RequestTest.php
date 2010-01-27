@@ -157,8 +157,12 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testXmlHell()
+    public function testXmHell()
     {
+        // This is expensive as hell, but who cares in a test!
+        $pearPath = $this->findPath('PHPUnit/Framework/TestCase.php');
+        $pearPath = dirname(dirname(dirname($pearPath)));
+
         $assert  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $assert .= '<notice version="2.0">';
         $assert .= '<api-key>1234</api-key>';
@@ -166,7 +170,21 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
         $assert .= '<name>Services_Hoptoad</name>';
         $assert .= '<url>http://github.com/till/php-hoptoad-notifier</url>';
         $assert .= '<version>@package_version@</version></notifier>';
-        $assert .= '<error><class>LogicException</class><message>Your mom.</message><backtrace/></error>';
+        $assert .= '<error><class>LogicException</class><message>Your mom.</message>';
+        $assert .= '<backtrace>';
+        $assert .= '<line method="Services_Hoptoad_RequestTest-&gt;testXmHell" file="" number=""/>';
+        $assert .= '<line method="ReflectionMethod-&gt;invokeArgs" file="' . $pearPath . '/PHPUnit/Framework/TestCase.php" number="824"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;runTest" file="' . $pearPath . '/PHPUnit/Framework/TestCase.php" number="707"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;runBare" file="' . $pearPath . '/PHPUnit/Framework/TestResult.php" number="687"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestResult-&gt;run" file="' . $pearPath . '/PHPUnit/Framework/TestCase.php" number="653"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestCase-&gt;run" file="' . $pearPath . '/PHPUnit/Framework/TestSuite.php" number="756"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestSuite-&gt;runTest" file="' . $pearPath . '/PHPUnit/Framework/TestSuite.php" number="732"/>';
+        $assert .= '<line method="PHPUnit_Framework_TestSuite-&gt;run" file="' . $pearPath . '/PHPUnit/TextUI/TestRunner.php" number="350"/>';
+        $assert .= '<line method="PHPUnit_TextUI_TestRunner-&gt;doRun" file="' . $pearPath . '/PHPUnit/TextUI/Command.php" number="214"/>';
+        $assert .= '<line method="PHPUnit_TextUI_Command-&gt;run" file="' . $pearPath . '/PHPUnit/TextUI/Command.php" number="147"/>';
+        $assert .= '<line method="PHPUnit_TextUI_Command::main" file="/usr/bin/phpunit" number="52"/>';
+        $assert .= '</backtrace>';
+        $assert .= '</error>';
         $assert .= '<request>';
         $assert .= '<url>/root/exploit -success</url>';
         $assert .= '<component/>';
@@ -207,7 +225,30 @@ class Services_Hoptoad_RequestTest extends PHPUnit_Framework_TestCase
 
         $actual = $request->getRequestData();
 
-        $this->assertEquals($assert, $actual);
-        $this->assertEquals($actual, (string) $request);
+        $this->assertXmlStringEqualsXmlString($assert, $actual);
+        $this->assertXmlStringEqualsXmlString($actual, (string) $request);
+    }
+
+    /**
+     * Gets the "real" path from an include directive.
+     *
+     * @param string $path_to_translate The path to find
+     *                                  e.g. from include 'Foo/Bar.php';
+     *
+     * @return mixed
+     */
+    protected function findPath($path_to_translate)
+    {
+        $IncludePath = explode(PATH_SEPARATOR, get_include_path()); 
+        foreach($IncludePath as $prefix){ 
+            if(substr($prefix,-1) == DIRECTORY_SEPARATOR) {
+                $prefix=substr($prefix,0,-1); 
+            }
+            $try_path=sprintf("%s%s%s", $prefix, DIRECTORY_SEPARATOR, $path_to_translate); 
+            if (file_exists($try_path)) {
+                return($try_path); 
+            }
+        }
+        return false; 
     }
 }

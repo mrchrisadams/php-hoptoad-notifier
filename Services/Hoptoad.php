@@ -61,7 +61,7 @@ class Services_Hoptoad
     /**
      * @var string $endpoint
      */
-    public static $endpoint = 'http://hoptoadapp.com/notices/';
+    public static $endpoint = 'http://hoptoadapp.com/notifier_api/v2/notices';
 
     /**
      * __construct
@@ -172,11 +172,12 @@ class Services_Hoptoad
         $data->setException($e);
         $data->setEnvironment(self::$environment);
 
-        $endpoint = 'http://hoptoadapp.com/notifier_api/v2/notices';
-        $xml      = (string) $data;
-        $header   = array("Accept: text/xml, application/xml", "Content-type: text/xml");
+        $xml    = (string) $data;
+        $header = array(
+            "Accept: text/xml, application/xml",
+            "Content-type: text/xml");
 
-        return self::makeRequest($header, $xml, $endpoint);
+        return self::makeRequest($header, $xml);
     }
 
     /**
@@ -198,9 +199,11 @@ class Services_Hoptoad
     }
 
     /**
-     * @param array  $header
-     * @param string $data
-     * @param mixed  $endpoint
+     * @param array  $header   An array of headers.
+     * @param string $data     The XML.
+     * @param mixed  $endpoint The endpoint.
+     *
+     * @return boolean
      */
     protected static function makeRequest(array $header, $data, $endpoint = null)
     {
@@ -213,10 +216,9 @@ class Services_Hoptoad
     	    $curlHandle = curl_init(); // init curl
 
             // cURL options
-            // FIXME: replace with HTTP_Request2
-            curl_setopt($curlHandle, CURLOPT_URL,            self::$endpoint);
+            curl_setopt($curlHandle, CURLOPT_URL,            $endpoint);
             curl_setopt($curlHandle, CURLOPT_POST,           1);
-            curl_setopt($curlHandle, CURLOPT_HEADER,         0);
+            curl_setopt($curlHandle, CURLOPT_HEADER,         1);
             curl_setopt($curlHandle, CURLOPT_TIMEOUT,        self::$timeout);
 	        curl_setopt($curlHandle, CURLOPT_POSTFIELDS,     $data);
 	        curl_setopt($curlHandle, CURLOPT_HTTPHEADER,     $header);
@@ -229,6 +231,8 @@ class Services_Hoptoad
             if ($info['http_code'] == 200) {
                 return true;
             }
+
+            var_dump($response, $info); exit;
 
             self::handleErrorResponse($info['http_code'], $data);
         }
